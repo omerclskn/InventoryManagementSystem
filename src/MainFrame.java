@@ -58,6 +58,7 @@ public class MainFrame extends JFrame {
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setSize(800,500);
 
         ArrayList<String> fields = new ArrayList<String>();
         fields.add("Depo ID");
@@ -120,4 +121,6 @@ public class MainFrame extends JFrame {
         mainPanel.add(buttonStock);
 
     }
+
+
 }
