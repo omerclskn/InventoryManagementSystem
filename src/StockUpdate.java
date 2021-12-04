@@ -17,6 +17,15 @@ public class StockUpdate extends JFrame {
         frame.setVisible(true);
     }
 
+    public void clearInputs(){
+        textField1.setText("");
+        labelStock.setText("");
+        labelName.setText("");
+        button2.setVisible(false);
+        comboBox1.setSelectedIndex(0);
+        comboBox2.setSelectedIndex(0);
+    }
+
     public StockUpdate() {
         stockPanel = new JPanel();
         stockPanel.setSize(200,300);
@@ -62,9 +71,10 @@ public class StockUpdate extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainFrame.updateStock(comboBox1, comboBox2, Integer.parseInt(textField1.getText()), allItems);
+                clearInputs();
             }
         });
-        button2.setVisible(true);
+        button2.setVisible(false);
         stockPanel.add(button2);
 
     }
