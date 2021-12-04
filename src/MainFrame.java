@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
         boolean flag = true;
         for(int i = 0; i < allItems.length; i++){
             if(allItems[i][1].toString().equals(selectedDepo) && allItems[i][4].toString().equals(selectedStock)){
-                model.setValueAt("Ürün Adet " + value, i, 6);
+                model.setValueAt("Ürün Adet: " + value, i, 6);
                 flag = false;
                 break;
             }
