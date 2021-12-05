@@ -93,6 +93,20 @@ public class MainFrame extends JFrame {
         }
     }
 
+    public static ArrayList<String> getInfoStocks(String stockName){
+        //depoid, adres, telefon dondurur.
+        ArrayList<String> temp=new ArrayList<>();
+        for (int i=0;i< allItems.length;i++){
+            if (allItems[i][1].toString().equals(stockName)){
+                temp.add((String) allItems[i][0]);//depoid
+                temp.add((String) allItems[i][2]);//depoadres
+                temp.add((String) allItems[i][3]);//depotelefon
+                return temp;
+            }
+        }
+        return null;
+    }
+
     public static void addStock(String stockName, String productId, int value, int type) {
         boolean flag = true;
         Object[][] temp = new Object[allItems.length][7];
@@ -103,8 +117,38 @@ public class MainFrame extends JFrame {
                 break;
             }
         }
+        String prodName="placeholder";
+        boolean existsKey=false;
         if(flag){
-            warningMessage();
+            for (int i=0;i< allItems.length;i++){
+                if(allItems[i][4].toString().equals(productId)){
+                    prodName=allItems[i][5].toString();
+                    existsKey=true;
+                    break;
+                }
+            }
+
+            if (!existsKey){
+                JFrame frame=new JFrame();
+                JOptionPane.showMessageDialog(frame,"Urun Kodu Bulunamadi...\nYeni urun ekleniyor");
+                prodName=JOptionPane.showInputDialog(frame,"Urun Adi:");
+            }
+            temp=new Object[allItems.length+1][7];
+            for (int i=0;i<allItems.length;i++){
+                for (int j=0;j<allItems[0].length;j++){
+                    temp[i][j]=allItems[i][j];
+                }
+            }
+            temp[temp.length-1][0]=getInfoStocks(stockName).get(0);//depoid
+            temp[temp.length-1][1]=stockName;//adi var zaten
+            temp[temp.length-1][2]=getInfoStocks(stockName).get(1);//adres
+            temp[temp.length-1][3]=getInfoStocks(stockName).get(2);//telefon
+            temp[temp.length-1][4]=productId;
+            temp[temp.length-1][5]=prodName;
+            temp[temp.length-1][6]=value;
+            allItems=temp;
+            model.addRow(temp[temp.length-1]);
+
         }
         else{
             model.setDataVector(new Object[][]{}, columnNames);
