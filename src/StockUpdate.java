@@ -3,42 +3,34 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicBorders;
 import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
 public class StockUpdate extends JFrame {
-    private JPanel stockPanel;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
-    private JTextField textField1;
-    private JButton button1;
-    private JLabel labelStock;
-    private JLabel labelName;
-    private JButton button2;
 
-    public static void main(String[] args) {
-        StockUpdate frame = new StockUpdate();
+    public static void main(String stockName) {
+        StockUpdate frame = new StockUpdate(stockName);
     }
 
-    public void clearInputs(){
+    /*public void clearInputs(){
         textField1.setText("");
         labelStock.setText("");
         labelName.setText("");
         button2.setVisible(false);
         comboBox1.setSelectedIndex(0);
         comboBox2.setSelectedIndex(0);
-    }
+    }*/
     // combo combo
     //label label
     //text
     //getir guncelle
 
-    public StockUpdate() {
+    public StockUpdate(String stockName) {
         setSize(300,441);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setVisible(true);
-
 
         //Logo Panel
         JPanel topLogoPanel=new JPanel();
@@ -52,7 +44,6 @@ public class StockUpdate extends JFrame {
         picLabel.setHorizontalAlignment(SwingConstants.CENTER);
         topLogoPanel.add(picLabel);
         add(topLogoPanel);
-
 
         //Logic Panel
         JPanel midPanel=new JPanel();
@@ -91,18 +82,22 @@ public class StockUpdate extends JFrame {
         ButtonGroup group=new ButtonGroup();
 
         JRadioButton ekleRad=new JRadioButton("Ekle");
+        ekleRad.setActionCommand("ekle");
         group.add(ekleRad);
         row3.add(ekleRad);
 
         JRadioButton cikarRad=new JRadioButton("Cikar");
+        cikarRad.setActionCommand("cikar");
         group.add(cikarRad);
         row3.add(cikarRad);
 
         JRadioButton guncelleRad=new JRadioButton("Guncelle");
+        guncelleRad.setActionCommand("guncelle");
         group.add(guncelleRad);
         row3.add(guncelleRad);
 
         JRadioButton silRad=new JRadioButton("Sil");
+        silRad.setActionCommand("sil");
         group.add(silRad);
         row3.add(silRad);
 
@@ -112,6 +107,17 @@ public class StockUpdate extends JFrame {
 
         JPanel row4=new JPanel();
         JButton doneButton=new JButton();
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (group.getSelection().getActionCommand()){
+                    case "ekle" -> MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), 1);
+                    case "cikar" -> MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), -1);
+                    case "guncelle" -> MainFrame.updateStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()));
+                    case "sil" -> MainFrame.DeleteStock(stockName, idTextField.getText());
+                }
+            }
+        });
         doneButton.setText("Uygula");
         row4.add(doneButton);
         midPanel.add(row4);
