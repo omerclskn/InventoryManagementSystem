@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MainFrame extends JFrame {
@@ -18,6 +20,35 @@ public class MainFrame extends JFrame {
         MainFrame frame = new MainFrame();
         frame.setVisible(true);
         frame.setTitle("Stock Management");
+    }
+
+    public static boolean logOperations(String type, Object[] props) {
+        BufferedWriter writer= null;
+        try {
+            writer = new BufferedWriter(new FileWriter("Log.txt",true));
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            Calendar calendar=Calendar.getInstance();
+            String dateTime=simpleDateFormat.format(calendar.getTime());
+            writer.append("\n");
+            if (type.equals("ekle")){
+                writer.append("||"+dateTime+"||"+" "+ props[0]+" deposuna "+ props[1]+" "+props[2]+" adet eklendi.");//depo adi urun adi adet
+            }
+            if (type.equals("cikar")){
+                writer.append("||"+dateTime+"||"+" "+ props[0]+" deposuna "+ props[1]+" "+props[2]+" adet silindi.");
+            }
+            if (type.equals("guncelle")){
+                writer.append("||"+dateTime+"||"+" "+ props[0]+" deposuna "+ props[1]+" "+props[2]+" adet olarak guncellendi.");
+            }
+            if (type.equals("sil")){
+                writer.append("||"+dateTime+"||"+" "+ props[0]+" deposundan "+ props[1]+" silindi.");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return true;
     }
 
     public static Object[][] getTableData (DefaultTableModel dtm) {
@@ -83,8 +114,10 @@ public class MainFrame extends JFrame {
                     if (allItems[i][1] == stockName) {
                         if (allItems[i][4] == productId){
                             model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], value});
+                            logOperations("guncelle",new Object[]{allItems[i][1],allItems[i][5],value});
                         }
                         else model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
+                        logOperations("guncelle",new Object[]{allItems[i][1],allItems[5][i],allItems[i][6]});
                     }
                 temp[j] = allItems[i];
                 j++;
@@ -148,7 +181,7 @@ public class MainFrame extends JFrame {
             temp[temp.length-1][6]=value;
             allItems=temp;
             model.addRow(temp[temp.length-1]);
-
+            logOperations("ekle",new Object[]{temp[temp.length-1][1],temp[temp.length-1][5],temp[temp.length-1][6]});
         }
         else{
             model.setDataVector(new Object[][]{}, columnNames);
@@ -156,8 +189,11 @@ public class MainFrame extends JFrame {
                 if (allItems[i][1] == stockName) {
                     if (allItems[i][4] == productId){
                         model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], Integer.parseInt(allItems[i][6].toString()) + (value * type)});
+                        if (type<0)  logOperations("cikar",new Object[]{allItems[i][1],allItems[i][5],value});
+                        else logOperations("ekle",new Object[]{allItems[i][1],allItems[i][5],value});
                     }
                     else model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
+                    logOperations("ekle",new Object[]{allItems[i][1],allItems[i][5],allItems[i][6]});
                 }
                 temp[j] = allItems[i];
                 j++;
@@ -185,6 +221,7 @@ public class MainFrame extends JFrame {
                 if (allItems[i] != null) {
                     if (allItems[i][1] == stockName) {
                         model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
+                        logOperations("sil",new Object[]{allItems[i][1],allItems[i][5],allItems[i][6]});
                     }
                     temp[j] = allItems[i];
                     j++;
