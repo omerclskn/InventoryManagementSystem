@@ -111,13 +111,12 @@ public class MainFrame extends JFrame {
         else{
             model.setDataVector(new Object[][]{}, columnNames);
             for (int i = 0, j = 0; i < allItems.length; i++) {
-                    if (allItems[i][1] == stockName) {
-                        if (allItems[i][4] == productId){
+                    if (allItems[i][1].equals(stockName)) {
+                        if (allItems[i][4].equals(productId) ){
                             model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], value});
                             logOperations("guncelle",new Object[]{allItems[i][1],allItems[i][5],value});
                         }
                         else model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
-                        logOperations("guncelle",new Object[]{allItems[i][1],allItems[5][i],allItems[i][6]});
                     }
                 temp[j] = allItems[i];
                 j++;
@@ -186,14 +185,20 @@ public class MainFrame extends JFrame {
         else{
             model.setDataVector(new Object[][]{}, columnNames);
             for (int i = 0, j = 0; i < allItems.length; i++) {
-                if (allItems[i][1] == stockName) {
-                    if (allItems[i][4] == productId){
-                        model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], Integer.parseInt(allItems[i][6].toString()) + (value * type)});
-                        if (type<0)  logOperations("cikar",new Object[]{allItems[i][1],allItems[i][5],value});
-                        else logOperations("ekle",new Object[]{allItems[i][1],allItems[i][5],value});
+                if (allItems[i][1].equals(stockName)) {
+                    if (allItems[i][4].equals(productId)){
+                        model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6].toString()});
+                        if (type<0) {
+                            logOperations("cikar", new Object[]{allItems[i][1], allItems[i][5], value});
+                            System.out.println("-1");
+                        }
+                        else {
+                            System.out.println("1");
+                            logOperations("ekle", new Object[]{allItems[i][1], allItems[i][5], value});
+                        }
                     }
-                    else model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
-                    logOperations("ekle",new Object[]{allItems[i][1],allItems[i][5],allItems[i][6]});
+                    else {
+                        model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});}
                 }
                 temp[j] = allItems[i];
                 j++;
@@ -207,6 +212,7 @@ public class MainFrame extends JFrame {
         Object[][] temp = new Object[allItems.length - 1][7];
         for(int i = 0; i < allItems.length; i++){
             if(allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)){
+                logOperations("sil",new Object[]{allItems[i][1],allItems[i][5],allItems[i][6]});
                 allItems[i] = null;
                 flag = false;
                 break;
@@ -219,9 +225,8 @@ public class MainFrame extends JFrame {
             model.setDataVector(new Object[][]{}, columnNames);
             for (int i = 0, j = 0; i < allItems.length; i++) {
                 if (allItems[i] != null) {
-                    if (allItems[i][1] == stockName) {
+                    if (allItems[i][1].equals(stockName)) {
                         model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
-                        logOperations("sil",new Object[]{allItems[i][1],allItems[i][5],allItems[i][6]});
                     }
                     temp[j] = allItems[i];
                     j++;
@@ -253,9 +258,8 @@ public class MainFrame extends JFrame {
         model.addRow(new Object[]{"1", "Depo 1", "Depo Adresi 1", "Depo Telefon 1", "1", "Ürün 1", "1000"});
         model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "2", "Ürün 2", "2000"});
         model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "3", "Ürün 3", "3000"});
-        model.addRow(new Object[]{"3", "Depo 3", "Depo Adresi 3", "Depo Telefon 3", "3", "Ürün 4", "4"});
-        model.addRow(new Object[]{"3", "Depo 3", "Depo Adresi 3", "Depo Telefon 3", "4", "Ürün 5", "500"});
-        model.addRow(new Object[]{"4", "Depo 4", "Depo Adresi 4", "Depo Telefon 4", "5", "Ürün 6", "6"});
+        model.addRow(new Object[]{"3", "Depo 3", "Depo Adresi 3", "Depo Telefon 3", "4", "Ürün 4", "500"});
+        model.addRow(new Object[]{"4", "Depo 4", "Depo Adresi 4", "Depo Telefon 4", "5", "Ürün 5", "6"});
 
         allItems =  getTableData(model);
         JTable table = new JTable(model);
