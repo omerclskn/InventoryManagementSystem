@@ -1,31 +1,24 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicBorders;
-import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 public class StockUpdate extends JFrame {
+    private JButton doneButton;
+    private ButtonGroup group;
+    private JTextField adetTextField;
+    private JTextField idTextField;
 
     public static void main(String stockName) {
         StockUpdate frame = new StockUpdate(stockName);
     }
 
-    /*public void clearInputs(){
-        textField1.setText("");
-        labelStock.setText("");
-        labelName.setText("");
-        button2.setVisible(false);
-        comboBox1.setSelectedIndex(0);
-        comboBox2.setSelectedIndex(0);
-    }*/
-    // combo combo
-    //label label
-    //text
-    //getir guncelle
+    public void clearInputs(){
+        adetTextField.setText("");
+        idTextField.setText("");
+        group.clearSelection();
+        doneButton.setEnabled(false);
+    }
 
     public StockUpdate(String stockName) {
         setSize(300,441);
@@ -52,7 +45,7 @@ public class StockUpdate extends JFrame {
         JLabel idLabel=new JLabel();
         idLabel.setText("Urun ID:");
 
-        TextField idTextField=new TextField();
+        idTextField=new JTextField();
         idTextField.setColumns(15);
 
         JPanel row1=new JPanel();
@@ -67,7 +60,7 @@ public class StockUpdate extends JFrame {
         JLabel adetLabel=new JLabel();
         adetLabel.setText("Urun Adet:");
 
-        TextField adetTextField=new TextField();
+        adetTextField=new JTextField();
         adetTextField.setColumns(15);
 
         row2.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
@@ -79,25 +72,49 @@ public class StockUpdate extends JFrame {
         JPanel row3=new JPanel();
         row3.setBounds(0,200,300,50);
         row3.setBorder(BorderFactory.createEmptyBorder(0,0,30,0));
-        ButtonGroup group=new ButtonGroup();
+        group=new ButtonGroup();
 
         JRadioButton ekleRad=new JRadioButton("Ekle");
         ekleRad.setActionCommand("ekle");
+        ekleRad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doneButton.setEnabled(true);
+            }
+        });
         group.add(ekleRad);
         row3.add(ekleRad);
 
         JRadioButton cikarRad=new JRadioButton("Cikar");
         cikarRad.setActionCommand("cikar");
+        cikarRad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doneButton.setEnabled(true);
+            }
+        });
         group.add(cikarRad);
         row3.add(cikarRad);
 
         JRadioButton guncelleRad=new JRadioButton("Guncelle");
         guncelleRad.setActionCommand("guncelle");
+        guncelleRad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doneButton.setEnabled(true);
+            }
+        });
         group.add(guncelleRad);
         row3.add(guncelleRad);
 
         JRadioButton silRad=new JRadioButton("Sil");
         silRad.setActionCommand("sil");
+        silRad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doneButton.setEnabled(true);
+            }
+        });
         group.add(silRad);
         row3.add(silRad);
 
@@ -106,7 +123,7 @@ public class StockUpdate extends JFrame {
         add(midPanel);
 
         JPanel row4=new JPanel();
-        JButton doneButton=new JButton();
+        doneButton=new JButton();
         doneButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,9 +133,11 @@ public class StockUpdate extends JFrame {
                     case "guncelle" -> MainFrame.updateStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()));
                     case "sil" -> MainFrame.DeleteStock(stockName, idTextField.getText());
                 }
+                clearInputs();
             }
         });
         doneButton.setText("Uygula");
+        doneButton.setEnabled(false);
         row4.add(doneButton);
         midPanel.add(row4);
 
