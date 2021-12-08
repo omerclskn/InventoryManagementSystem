@@ -94,6 +94,7 @@ public class MainFrame extends JFrame {
         Object[][] temp = new Object[allItems.length][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
+                // UPDATE İŞLEMİ YAPILACAK ADET DEĞERİ TAMAMEN DEĞİŞECEK
                 allItems[i][6] = value;
                 flag = false;
                 break;
@@ -135,6 +136,7 @@ public class MainFrame extends JFrame {
         Object[][] temp = new Object[allItems.length][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
+                // UPDATE SORGUSU YAPILACAK TYPE -1 VEYA +1 E GÖRE ADET DEĞERİ EKLENECEK/ÇIKARILACAK
                 allItems[i][6] = Integer.parseInt(allItems[i][6].toString()) + (value * type);
                 flag = false;
                 break;
@@ -172,6 +174,7 @@ public class MainFrame extends JFrame {
             temp[temp.length - 1][6] = value;
             allItems = temp;
             model.addRow(temp[temp.length - 1]);
+            // CREATE INSERT INTO İŞLEMİ YAPILACAK
             logOperations("ekle", new Object[]{temp[temp.length - 1][1], temp[temp.length - 1][5], temp[temp.length - 1][6]});
         } else {
             model.setDataVector(new Object[][]{}, columnNames);
@@ -197,6 +200,7 @@ public class MainFrame extends JFrame {
         Object[][] temp = new Object[allItems.length - 1][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
+                // DELETE İŞLEMİ YAPILACAK
                 logOperations("sil", new Object[]{allItems[i][1], allItems[i][5], allItems[i][6]});
                 allItems[i] = null;
                 flag = false;
@@ -238,7 +242,7 @@ public class MainFrame extends JFrame {
 
         columnNames = fields.toArray();
         model = new DefaultTableModel(columnNames, 0);
-
+        // SELECT SORGUSU ATIP TÜM VERİ TABLE A ÇEKİLECEK ARDINDAN gettabledata fonksiyonu ile table object[][] tipine çevirilecek
         model.addRow(new Object[]{"1", "Depo 1", "Depo Adresi 1", "Depo Telefon 1", "1", "Ürün 1", "1000"});
         model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "2", "Ürün 2", "2000"});
         model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "3", "Ürün 3", "3000"});
