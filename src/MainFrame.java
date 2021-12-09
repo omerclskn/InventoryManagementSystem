@@ -2,6 +2,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -13,8 +17,11 @@ public class MainFrame extends JFrame {
     public static DefaultTableModel model;
     public static Object[][] allItems;
     public static Object[] columnNames;
+    public static String user = "postgres";
+    public static String password = "root";
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws SQLException {
         MainFrame frame = new MainFrame();
         frame.setVisible(true);
         frame.setTitle("Stock Management");
@@ -89,12 +96,21 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public static void updateStock(String stockName, String productId, int value) {
+    public static void updateStock(String stockName, String productId, int value) throws SQLException {
         boolean flag = true;
         Object[][] temp = new Object[allItems.length][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
                 // UPDATE İŞLEMİ YAPILACAK ADET DEĞERİ TAMAMEN DEĞİŞECEK
+
+                Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/YBS",user,password);
+                String query = "UPDATE products SET quantity = " + value + " WHERE depoAdı = '" + allItems[i][1].toString() + "'"
+                        + " AND pid = " + allItems[i][4].toString();
+
+                java.sql.Statement s;
+                s = conn.createStatement();
+                s.execute(query);
+
                 allItems[i][6] = value;
                 flag = false;
                 break;
@@ -109,7 +125,8 @@ public class MainFrame extends JFrame {
                     if (allItems[i][4].equals(productId)) {
                         logOperations("guncelle", new Object[]{allItems[i][1], allItems[i][5], value});
                     }
-                    model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3], allItems[i][4], allItems[i][5], allItems[i][6]});
+                    model.addRow(new Object[]{allItems[i][0], allItems[i][1], allItems[i][2], allItems[i][3],
+                            allItems[i][4], allItems[i][5], allItems[i][6]});
                 }
                 temp[i] = allItems[i];
             }
@@ -131,12 +148,21 @@ public class MainFrame extends JFrame {
         return null;
     }
 
-    public static void addStock(String stockName, String productId, int value, int type) {
+    public static void addStock(String stockName, String productId, int value, int type) throws SQLException {
         boolean flag = true;
         Object[][] temp = new Object[allItems.length][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
                 // UPDATE SORGUSU YAPILACAK TYPE -1 VEYA +1 E GÖRE ADET DEĞERİ EKLENECEK/ÇIKARILACAK
+
+                Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/YBS",user,password);
+                String query = "UPDATE products SET quantity = quantity + " + value + " WHERE depoAdı = '" + allItems[i][1].toString() + "'"
+                        + " AND pid = " + allItems[i][4].toString();
+
+                java.sql.Statement s;
+                s = conn.createStatement();
+                s.execute(query);
+
                 allItems[i][6] = Integer.parseInt(allItems[i][6].toString()) + (value * type);
                 flag = false;
                 break;
@@ -175,6 +201,16 @@ public class MainFrame extends JFrame {
             allItems = temp;
             model.addRow(temp[temp.length - 1]);
             // CREATE INSERT INTO İŞLEMİ YAPILACAK
+
+            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/YBS",user,password);
+            String query = "INSERT INTO products values('" + temp[temp.length - 1][0] + "','" + temp[temp.length - 1][1]
+                    + "','" + temp[temp.length - 1][2] + "','" + temp[temp.length - 1][3] + "','" + temp[temp.length - 1][4] + "','"
+                    + temp[temp.length - 1][5] + "','" + temp[temp.length - 1][6] + "');";
+
+            java.sql.Statement s;
+            s = conn.createStatement();
+            s.execute(query);
+
             logOperations("ekle", new Object[]{temp[temp.length - 1][1], temp[temp.length - 1][5], temp[temp.length - 1][6]});
         } else {
             model.setDataVector(new Object[][]{}, columnNames);
@@ -195,13 +231,22 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public static void DeleteStock(String stockName, String productId) {
+    public static void DeleteStock(String stockName, String productId) throws SQLException {
         boolean flag = true;
         Object[][] temp = new Object[allItems.length - 1][7];
         for (int i = 0; i < allItems.length; i++) {
             if (allItems[i][1].toString().equals(stockName) && allItems[i][4].toString().equals(productId)) {
                 // DELETE İŞLEMİ YAPILACAK
                 logOperations("sil", new Object[]{allItems[i][1], allItems[i][5], allItems[i][6]});
+
+                Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/YBS",user,password);
+                String query = "DELETE FROM products" + " WHERE depoAdı = '" + allItems[i][1].toString() + "'"
+                        + " AND pid = " + allItems[i][4].toString();
+
+                java.sql.Statement s;
+                s = conn.createStatement();
+                s.execute(query);
+
                 allItems[i] = null;
                 flag = false;
                 break;
@@ -224,7 +269,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public MainFrame() {
+    public MainFrame() throws SQLException {
         mainPanel = new JPanel();
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -243,11 +288,23 @@ public class MainFrame extends JFrame {
         columnNames = fields.toArray();
         model = new DefaultTableModel(columnNames, 0);
         // SELECT SORGUSU ATIP TÜM VERİ TABLE A ÇEKİLECEK ARDINDAN gettabledata fonksiyonu ile table object[][] tipine çevirilecek
-        model.addRow(new Object[]{"1", "Depo 1", "Depo Adresi 1", "Depo Telefon 1", "1", "Ürün 1", "1000"});
-        model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "2", "Ürün 2", "2000"});
-        model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "3", "Ürün 3", "3000"});
-        model.addRow(new Object[]{"3", "Depo 3", "Depo Adresi 3", "Depo Telefon 3", "4", "Ürün 4", "500"});
-        model.addRow(new Object[]{"4", "Depo 4", "Depo Adresi 4", "Depo Telefon 4", "5", "Ürün 5", "6"});
+//        model.addRow(new Object[]{"1", "Depo 1", "Depo Adresi 1", "Depo Telefon 1", "1", "Ürün 1", "1000"});
+//        model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "2", "Ürün 2", "2000"});
+//        model.addRow(new Object[]{"2", "Depo 2", "Depo Adresi 2", "Depo Telefon 2", "3", "Ürün 3", "3000"});
+//        model.addRow(new Object[]{"3", "Depo 3", "Depo Adresi 3", "Depo Telefon 3", "4", "Ürün 4", "500"});
+//        model.addRow(new Object[]{"4", "Depo 4", "Depo Adresi 4", "Depo Telefon 4", "5", "Ürün 5", "6"});
+
+        Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/YBS",user,password);
+        String query = "SELECT * FROM products";
+        java.sql.Statement s;
+        s = conn.createStatement();
+
+        ResultSet r = s.executeQuery(query);
+
+        while(r.next()) {
+            model.addRow(new Object[]{r.getString(1), r.getString(2), r.getString(3),
+            r.getString(4), r.getString(5), r.getString(6), r.getString(7)});
+        }
 
         allItems = getTableData(model);
         JTable table = new JTable(model);

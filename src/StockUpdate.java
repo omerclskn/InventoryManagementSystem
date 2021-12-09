@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class StockUpdate extends JFrame {
     private JButton doneButton;
@@ -79,6 +80,8 @@ public class StockUpdate extends JFrame {
         ekleRad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                adetLabel.setVisible(true);
+                adetTextField.setVisible(true);
                 doneButton.setEnabled(true);
             }
         });
@@ -90,6 +93,8 @@ public class StockUpdate extends JFrame {
         cikarRad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                adetLabel.setVisible(true);
+                adetTextField.setVisible(true);
                 doneButton.setEnabled(true);
             }
         });
@@ -101,6 +106,8 @@ public class StockUpdate extends JFrame {
         guncelleRad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                adetLabel.setVisible(true);
+                adetTextField.setVisible(true);
                 doneButton.setEnabled(true);
             }
         });
@@ -112,6 +119,8 @@ public class StockUpdate extends JFrame {
         silRad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                adetLabel.setVisible(false);
+                adetTextField.setVisible(false);
                 doneButton.setEnabled(true);
             }
         });
@@ -128,10 +137,34 @@ public class StockUpdate extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 switch (group.getSelection().getActionCommand()){
-                    case "ekle" -> MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), 1);
-                    case "cikar" -> MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), -1);
-                    case "guncelle" -> MainFrame.updateStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()));
-                    case "sil" -> MainFrame.DeleteStock(stockName, idTextField.getText());
+                    case "ekle" -> {
+                        try {
+                            MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), 1);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
+                    case "cikar" -> {
+                        try {
+                            MainFrame.addStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()), -1);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
+                    case "guncelle" -> {
+                        try {
+                            MainFrame.updateStock(stockName, idTextField.getText(), Integer.parseInt(adetTextField.getText()));
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
+                    case "sil" -> {
+                        try {
+                            MainFrame.DeleteStock(stockName, idTextField.getText());
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
                 }
                 clearInputs();
             }
