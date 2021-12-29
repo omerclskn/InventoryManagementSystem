@@ -12,9 +12,9 @@ public class StockControl extends JFrame {
     }
 
     public static void getLowStock(Object [][] allItems) {
-        for (int i = 0; i < allItems.length; i++) {
-            if (Integer.parseInt(allItems[i][6].toString()) < 10) {
-                model.addRow(allItems[i]);
+        for (Object[] allItem : allItems) {
+            if (Integer.parseInt(allItem[6].toString()) < 20) {
+                model.addRow(allItem);
             }
         }
     }
@@ -26,7 +26,7 @@ public class StockControl extends JFrame {
         setSize(600, 400);
         setLocationRelativeTo(null);
 
-        ArrayList<String> fields = new ArrayList<String>();
+        ArrayList<String> fields = new ArrayList<>();
         fields.add("Depo ID");
         fields.add("Depo Adı");
         fields.add("Ürün ID");
